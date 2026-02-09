@@ -75,11 +75,25 @@
       no.style.top = y + 'px';
     }
 
-    // Prepare container
+    // Prepare container and lock No button size so it doesn't collapse when positioned
     choice.style.position = 'relative';
     no.style.position = 'absolute';
-    no.style.right = '16px';
-    no.style.top = '0';
+    // freeze size to current rendered size
+    function lockNoSize(){
+      const w = no.offsetWidth;
+      const h = no.offsetHeight;
+      no.style.width = w + 'px';
+      no.style.height = h + 'px';
+      no.style.whiteSpace = 'nowrap';
+    }
+    lockNoSize();
+    // ensure stacking so Yes stays on top
+    yes.style.zIndex = 3;
+    no.style.zIndex = 2;
+
+    // place No initially to the right
+    no.style.left = Math.max(8, choice.clientWidth - no.offsetWidth - 8) + 'px';
+    no.style.top = '6px';
 
     no.addEventListener('mouseenter', moveNoButton);
     no.addEventListener('touchstart', (e) => {
@@ -87,13 +101,13 @@
       moveNoButton();
     });
 
-    // Also move when the mouse gets near
+    // Move when the mouse gets near, with smaller sensitivity to avoid constant jumping
     document.addEventListener('mousemove', (e) => {
       const nb = no.getBoundingClientRect();
       const dx = e.clientX - (nb.left + nb.width / 2);
       const dy = e.clientY - (nb.top + nb.height / 2);
       const dist = Math.hypot(dx, dy);
-      if (dist < 140) moveNoButton();
+      if (dist < 90) moveNoButton();
     });
   </script>
 </body>
