@@ -1,81 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Sofia Valntine Plz</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <style>
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      max-width: 800px;
-      margin: 60px auto;
-      padding: 0 20px;
-      line-height: 1.6;
-      color: #222;
-    }
-
-    h1 {
-      margin-bottom: 0.2em;
-    }
-
-    .subtitle {
-      color: #555;
-      margin-bottom: 1.5em;
-    }
-
-    a {
-      color: #0057b8;
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    section {
-      margin-bottom: 2em;
-    }
-  </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Sofia — Will You Be My Valentine?</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <main class="wrap">
+    <div class="card">
+      <div class="hearts" aria-hidden="true">
+        <span class="heart">❤</span>
+        <span class="heart">❤</span>
+        <span class="heart">❤</span>
+      </div>
 
-  <h1>Cole Balintfy</h1>
-  <div class="subtitle">PhD applicant in Chemistry</div>
+      <h1>For Sofia</h1>
+      <p class="lead">Sofia, you light up every day. I have something to ask you...</p>
 
-  <section>
-    <h2>About</h2>
-    <p>
-      I am a PhD applicant in chemistry with interests in physical chemistry and
-      data-driven analysis of chemical systems. I am currently applying to
-      doctoral programs and interested in computational and experimental research.
-    </p>
-  </section>
+      <div class="ask">
+        <h2>Will you be my Valentine?</h2>
+        <div class="choice" id="choice">
+          <button id="yesBtn" class="btn">Yes 💖</button>
+          <button id="noBtn" class="btn btn-secondary">No</button>
+        </div>
+        <div id="answer" class="answer hidden" aria-live="polite">
+          <p>I'll love you, cherish you, and make you smile — every day.</p>
+          <p class="signature">— Cole</p>
+        </div>
+      </div>
 
-  <section>
-    <h2>Education</h2>
-    <p>
-      <!-- Example:
-      B.S. in Chemistry, University Name (Year)
-      -->
-    </p>
-  </section>
+      <footer class="small">Made with ❤️</footer>
+    </div>
+  </main>
 
-  <section>
-    <h2>Projects</h2>
-    <ul>
-      <li>Sales data analysis in R (txhousing dataset)</li>
-      <li>C++ project using PubChem API for molecular properties</li>
-    </ul>
-  </section>
+  <script>
+    const yes = document.getElementById('yesBtn');
+    const no = document.getElementById('noBtn');
+    const answer = document.getElementById('answer');
+    const choice = document.getElementById('choice');
 
-  <section>
-    <h2>Contact</h2>
-    <p>
-      <!-- You can put your email or a link to GitHub here -->
-      GitHub: <a href="https://github.com/cbalintf">https://github.com/cbalintf</a>
-    </p>
-  </section>
+    function spawnHearts(count = 20) {
+      for (let i = 0; i < count; i++) {
+        const h = document.createElement('div');
+        h.className = 'float-heart';
+        h.style.left = Math.random() * 90 + '%';
+        h.style.animationDuration = 3 + Math.random() * 3 + 's';
+        h.textContent = '❤';
+        document.body.appendChild(h);
+        setTimeout(() => h.remove(), 6000);
+      }
+    }
 
+    yes.addEventListener('click', () => {
+      answer.classList.remove('hidden');
+      yes.disabled = true;
+      no.disabled = true;
+      yes.textContent = 'You said Yes ❤️';
+      spawnHearts(30);
+    });
+
+    // Move the No button away when approached
+    function moveNoButton() {
+      const rect = choice.getBoundingClientRect();
+      const btnW = no.offsetWidth;
+      const btnH = no.offsetHeight;
+      const padding = 12;
+      const maxX = rect.width - btnW - padding;
+      const maxY = rect.height - btnH - padding;
+      const x = Math.random() * Math.max(0, maxX) + padding / 2;
+      const y = Math.random() * Math.max(0, maxY) + padding / 2;
+      no.style.position = 'absolute';
+      no.style.left = x + 'px';
+      no.style.top = y + 'px';
+    }
+
+    // Prepare container
+    choice.style.position = 'relative';
+    no.style.position = 'absolute';
+    no.style.right = '16px';
+    no.style.top = '0';
+
+    no.addEventListener('mouseenter', moveNoButton);
+    no.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      moveNoButton();
+    });
+
+    // Also move when the mouse gets near
+    document.addEventListener('mousemove', (e) => {
+      const nb = no.getBoundingClientRect();
+      const dx = e.clientX - (nb.left + nb.width / 2);
+      const dy = e.clientY - (nb.top + nb.height / 2);
+      const dist = Math.hypot(dx, dy);
+      if (dist < 140) moveNoButton();
+    });
+  </script>
 </body>
 </html>
